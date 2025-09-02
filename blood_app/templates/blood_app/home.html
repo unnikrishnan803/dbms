@@ -1,0 +1,227 @@
+{% extends 'blood_app/base.html' %}
+{% load static %}
+{% block title %}Home - Blood Donation{% endblock %}
+{% block content %}
+<section class="hero mb-5 fade-in">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <h1 class="display-5 fw-bold text-danger mb-3 animate__animated animate__fadeInDown">Donate blood, save lives</h1>
+        <p class="fs-5 text-muted mb-4">Register as a donor or recipient, find donors by blood group and city, and manage requests in one simple app.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{% url 'register' %}" class="btn btn-danger btn-lg">
+            <i class="bi bi-person-plus me-2"></i>Register
+          </a>
+          <a href="{% url 'donor_list' %}" class="btn btn-outline-danger btn-lg">
+            <i class="bi bi-search-heart me-2"></i>Find Donors
+          </a>
+          <a href="{% url 'donation_list' %}" class="btn btn-outline-success btn-lg">
+            <i class="bi bi-droplet-fill me-2"></i>View Donations
+          </a>
+          <a href="{% url 'blood_inventory' %}" class="btn btn-outline-warning btn-lg">
+            <i class="bi bi-boxes me-2"></i>Blood Inventory
+          </a>
+          <a href="{% url 'statistics' %}" class="btn btn-outline-info btn-lg">
+            <i class="bi bi-graph-up me-2"></i>Statistics
+          </a>
+          <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#certificateModal">
+            <i class="bi bi-award me-2"></i>Find Certificate
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-5 text-center">
+        <img src="{% static 'img/hero-donate.svg' %}" class="hero-illustration animate__animated animate__zoomIn" alt="Donate blood illustration">
+      </div>
+    </div>
+  </div>
+  </section>
+
+<!-- Certificate Lookup Modal -->
+<div class="modal fade" id="certificateModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-award text-danger me-2"></i>Find Your Certificate</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="post" action="{% url 'certificate_lookup' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter your name">
+          </div>
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label">Age</label>
+              <input type="number" min="0" name="age" class="form-control" placeholder="Age">
+            </div>
+            <div class="col-6">
+              <label class="form-label">District</label>
+              <select name="district" id="modal-district" class="form-select">
+                <option value="">Select District</option>
+                {% for val,label in districts %}
+                <option value="{{ val }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="mt-2">
+            <label class="form-label">Taluk</label>
+            <select name="taluk" id="modal-taluk" class="form-select">
+              <option value="">Select Taluk</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger">Search</button>
+        </div>
+      </form>
+    </div>
+  </div>
+ </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const districtSelect = document.getElementById('modal-district');
+    const talukSelect = document.getElementById('modal-taluk');
+    if (districtSelect && talukSelect) {
+      districtSelect.addEventListener('change', function() {
+        const selectedDistrict = this.value;
+        talukSelect.innerHTML = '<option value="">Select Taluk</option>';
+        if (selectedDistrict) {
+          fetch(`/get-taluks/?district=${encodeURIComponent(selectedDistrict)}`)
+            .then(r => r.json())
+            .then(data => {
+              (data.taluks || []).forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t; opt.textContent = t; talukSelect.appendChild(opt);
+              })
+            })
+            .catch(() => {});
+        }
+      });
+    }
+  });
+</script>
+
+<!-- Dashboard Stats -->
+<div class="row g-4 mb-5">
+  <div class="col-md-3">
+    <div class="card bg-primary text-white text-center fade-in">
+      <div class="card-body">
+        <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
+        <h3 class="mt-2">{{ total_donors|default:"0" }}</h3>
+        <p class="mb-0">Total Donors</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card bg-success text-white text-center fade-in" style="animation-delay: .1s;">
+      <div class="card-body">
+        <i class="bi bi-heart-pulse-fill" style="font-size: 2rem;"></i>
+        <h3 class="mt-2">{{ total_donations|default:"0" }}</h3>
+        <p class="mb-0">Total Donations</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card bg-warning text-dark text-center fade-in" style="animation-delay: .2s;">
+      <div class="card-body">
+        <i class="bi bi-file-earmark-text-fill" style="font-size: 2rem;"></i>
+        <h3 class="mt-2">{{ total_requests|default:"0" }}</h3>
+        <p class="mb-0">Blood Requests</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card bg-danger text-white text-center fade-in" style="animation-delay: .3s;">
+      <div class="card-body">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size: 2rem;"></i>
+        <h3 class="mt-2">{{ critical_blood_groups|length|default:"0" }}</h3>
+        <p class="mb-0">Critical Levels</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Blood Inventory Status -->
+{% if inventory %}
+<div class="row g-4 mb-5">
+  <div class="col-12">
+    <h3 class="mb-3"><i class="bi bi-boxes me-2 text-danger"></i>Blood Inventory Status</h3>
+    <div class="row g-2">
+      {% for inv in inventory %}
+      <div class="col-md-2 col-sm-4 col-6">
+        <div class="card border-{{ inv.get_status_color }} text-center">
+          <div class="card-body p-2">
+            <h6 class="mb-1">{{ inv.blood_group }}</h6>
+            <span class="badge bg-{{ inv.get_status_color }}">{{ inv.available_units }} units</span>
+            {% if inv.is_critical %}
+              <small class="d-block text-danger">Critical!</small>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Recent Donations -->
+{% if recent_donations %}
+<div class="row g-4 mb-5">
+  <div class="col-12">
+    <h3 class="mb-3"><i class="bi bi-clock-history me-2 text-success"></i>Recent Donations</h3>
+    <div class="table-responsive">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Donor</th>
+            <th>Blood Group</th>
+            <th>Hospital</th>
+            <th>Date</th>
+            <th>Units</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for donation in recent_donations %}
+          <tr>
+            <td>{{ donation.donor.name }}</td>
+            <td><span class="badge text-bg-danger">{{ donation.blood_group }}</span></td>
+            <td>{{ donation.hospital_name }}</td>
+            <td>{{ donation.donation_date|date:"M d, Y" }}</td>
+            <td>{{ donation.units_donated }} unit(s)</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100 fade-in">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-droplet text-danger me-2"></i>Find Compatible Donors</h5>
+        <p class="card-text text-muted">Search by blood group and city to quickly find willing donors near you.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm h-100 fade-in" style="animation-delay: .1s;">
+      <div class="card-body">
+        <h5 class="card-title"><i class="bi bi-hospital text-danger me-2"></i>Hospital Dashboard</h5>
+        <p class="card-text text-muted">Review requests, view contacts, and update statuses securely after login.</p>
+      </div>
+    </div>
+  </div>
+  
+</div>
+{% endblock %}
+
+

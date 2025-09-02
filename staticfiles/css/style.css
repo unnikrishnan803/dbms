@@ -1,0 +1,156 @@
+:root {
+  --bg: #fff7f8;
+  --card-bg: #ffffff;
+  --text: #243041;
+  --muted: #6b7280;
+  --primary: #e11d48; /* rose-600 */
+  --primary-600: #be123c;
+  --ring: rgba(225, 29, 72, 0.22);
+  --gradient: linear-gradient(135deg, #fff 0%, #ffe1e6 100%);
+  --surface: #fafafa;
+  --border: rgba(0, 0, 0, 0.08);
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #dc2626;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+.navbar {
+  box-shadow: 0 6px 20px rgba(0,0,0,.05);
+}
+
+.card-header {
+  font-weight: 600;
+}
+
+/* Hero */
+.hero {
+  background: var(--gradient);
+  border-radius: 16px;
+  padding: 48px 24px;
+  border: 1px solid var(--border);
+}
+
+.hero-illustration {
+  max-width: 420px;
+}
+
+/* Subtle fade-in */
+.fade-in {
+  animation: fadeIn 0.8s ease-in both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+/* Buttons */
+.btn-danger {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+.btn-danger:hover { background-color: var(--primary-600); border-color: var(--primary-600); }
+
+.btn-outline-danger {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.btn-outline-danger:hover { background-color: var(--primary); color: #fff; }
+
+.btn-outline-warning { color: var(--warning); border-color: var(--warning); }
+.btn-outline-warning:hover { background-color: var(--warning); color: #111827; }
+
+.btn-outline-info { color: #0284c7; border-color: #0284c7; }
+.btn-outline-info:hover { background-color: #0284c7; color: #fff; }
+
+/* Inputs focus ring */
+.form-control:focus, .form-select:focus {
+  box-shadow: 0 0 0 .25rem var(--ring);
+  border-color: var(--primary);
+}
+
+/* Glass nav */
+.navbar.bg-danger {
+  background: linear-gradient(180deg, rgba(225,29,72,.95), rgba(225,29,72,.9)) !important;
+  backdrop-filter: saturate(140%) blur(6px);
+}
+
+/* Tables */
+.table thead th {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.table td, .table th { vertical-align: middle; }
+.table-striped tbody tr:nth-of-type(odd) { background-color: rgba(0,0,0,.02); }
+
+/* Badges */
+.badge.text-bg-danger { background: var(--primary); }
+
+/* Footer */
+footer { background: transparent; }
+
+/* Alerts */
+.alert { border-radius: 12px; border-color: var(--border); }
+
+/* Modal */
+.modal-content { border-radius: 14px; border: 1px solid var(--border); }
+.modal-header { border-bottom-color: var(--border); }
+.modal-footer { border-top-color: var(--border); }
+
+/* Utility */
+.rounded-lg { border-radius: 14px; }
+.shadow-soft { box-shadow: 0 10px 30px rgba(0,0,0,.06); }
+
+/* Mobile spacing improvements */
+@media (max-width: 576px) {
+  .hero { padding: 28px 16px; }
+  .navbar .container { padding-left: 12px; padding-right: 12px; }
+  .table { font-size: 0.95rem; }
+}
+
+/* Print optimizations (hide chrome) */
+@media print {
+  nav, footer, .no-print, .navbar, .btn, .alert { display: none !important; }
+  main.container { padding: 0 !important; margin: 0 !important; }
+  body { background: #fff; }
+}
+
+/* Dark mode (auto) - Overridden to always use light theme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #fff7f8 !important;
+    --card-bg: #ffffff !important;
+    --text: #243041 !important;
+    --muted: #6b7280 !important;
+    --ring: rgba(225, 29, 72, 0.22) !important;
+    --surface: #fafafa !important;
+    --border: rgba(0, 0, 0, 0.08) !important;
+  }
+  .navbar.bg-danger { background: linear-gradient(180deg, rgba(225,29,72,.95), rgba(225,29,72,.9)) !important; }
+}
+

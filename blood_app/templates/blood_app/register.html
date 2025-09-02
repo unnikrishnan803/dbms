@@ -1,0 +1,227 @@
+{% extends 'blood_app/base.html' %}
+{% load static %}
+{% block title %}Register - Blood Donation{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="form-container form-fade-in">
+      <div class="form-header">
+        <h2><i class="bi bi-person-plus-fill me-3"></i>Join Our Blood Donation Community</h2>
+        <p>Your registration helps save lives. Let's get you started!</p>
+      </div>
+      
+      <form method="post" enctype="multipart/form-data" novalidate class="needs-validation">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <div class="row g-4">
+          <!-- Personal Information Section -->
+          <div class="col-12">
+            <h4 class="text-danger mb-3"><i class="bi bi-person-badge me-2"></i>Personal Information</h4>
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label">Full Name <span class="text-danger">*</span></label>
+            {{ form.name }}
+            {% if form.name.errors %}
+              <div class="invalid-feedback d-block">{{ form.name.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="col-md-3">
+            <label class="form-label">Age <span class="text-danger">*</span></label>
+            {{ form.age }}
+            {% if form.age.errors %}
+              <div class="invalid-feedback d-block">{{ form.age.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="col-md-3">
+            <label class="form-label">Gender <span class="text-danger">*</span></label>
+            {{ form.gender }}
+            {% if form.gender.errors %}
+              <div class="invalid-feedback d-block">{{ form.gender.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Contact Information Section -->
+          <div class="col-12">
+            <h4 class="text-danger mb-3"><i class="bi bi-envelope me-2"></i>Contact Information</h4>
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label">Email Address <span class="text-danger">*</span></label>
+            {{ form.email }}
+            <div class="form-text">
+              <i class="bi bi-info-circle me-1"></i>
+              We'll use this to send important updates and notifications.
+            </div>
+            {% if form.email.errors %}
+              <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+            {{ form.phone }}
+            <div class="form-text">
+              <i class="bi bi-telephone me-1"></i>
+              Enter your phone number
+            </div>
+            {% if form.phone.errors %}
+              <div class="invalid-feedback d-block">{{ form.phone.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Location Section -->
+          <div class="col-12">
+            <h4 class="text-danger mb-3"><i class="bi bi-geo-alt me-2"></i>Location Details</h4>
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label">City <span class="text-danger">*</span></label>
+            {{ form.city }}
+            {% if form.city.errors %}
+              <div class="invalid-feedback d-block">{{ form.city.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label">District <span class="text-danger">*</span></label>
+            {{ form.district }}
+            {% if form.district.errors %}
+              <div class="invalid-feedback d-block">{{ form.district.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label">Taluk <span class="text-danger">*</span></label>
+            {{ form.taluk }}
+            {% if form.taluk.errors %}
+              <div class="invalid-feedback d-block">{{ form.taluk.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Blood Donation Section -->
+          <div class="col-12">
+            <h4 class="text-danger mb-3"><i class="bi bi-droplet me-2"></i>Blood Donation Details</h4>
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label">Blood Group <span class="text-danger">*</span></label>
+            {{ form.blood_group }}
+            {% if form.blood_group.errors %}
+              <div class="invalid-feedback d-block">{{ form.blood_group.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label">Photo</label>
+            {{ form.photo }}
+            <div class="form-text">
+              <i class="bi bi-camera me-1"></i>
+              JPG/PNG format, recommended 300x400px, under 2MB
+            </div>
+            {% if form.photo.errors %}
+              <div class="invalid-feedback d-block">{{ form.photo.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Photo Preview -->
+          <div class="col-12">
+            <div class="text-center">
+              <div class="border rounded p-3 d-inline-block">
+                <img id="photoPreview" alt="Photo Preview" style="max-height:200px;max-width:200px;object-fit:cover;border-radius:8px;" class="img-fluid">
+                <div class="mt-2 text-muted small">Photo Preview</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Willingness to Donate -->
+          <div class="col-12">
+            <div class="form-check form-check-lg">
+              {{ form.willing_to_donate }}
+              <label class="form-check-label fs-5">
+                <i class="bi bi-heart-fill text-danger me-2"></i>
+                I am willing to donate blood to help save lives
+              </label>
+            </div>
+            {% if form.willing_to_donate.errors %}
+              <div class="invalid-feedback d-block">{{ form.willing_to_donate.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="col-12 text-center mt-4">
+            <button type="submit" class="btn btn-danger btn-lg me-3">
+              <i class="bi bi-check-circle me-2"></i>Complete Registration
+            </button>
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg">
+              <i class="bi bi-arrow-left me-2"></i>Back to Home
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const input = document.getElementById('id_photo');
+    const preview = document.getElementById('photoPreview');
+    if (input && preview) {
+      input.addEventListener('change', function(){
+        const file = this.files && this.files[0];
+        if (!file) { 
+          preview.removeAttribute('src'); 
+          preview.style.display = 'none';
+          return; 
+        }
+        const url = URL.createObjectURL(file);
+        preview.src = url;
+        preview.style.display = 'block';
+      });
+    }
+  })();
+  
+  // Dynamic taluk loading
+  document.addEventListener('DOMContentLoaded', function() {
+    const districtSelect = document.getElementById('district-select');
+    const talukSelect = document.getElementById('taluk-select');
+    
+    if (districtSelect && talukSelect) {
+      districtSelect.addEventListener('change', function() {
+        const selectedDistrict = this.value;
+        
+        // Clear taluk options
+        talukSelect.innerHTML = '<option value="">Select Taluk</option>';
+        
+        if (selectedDistrict) {
+          // Fetch taluks for selected district
+          fetch(`/get-taluks/?district=${encodeURIComponent(selectedDistrict)}`)
+            .then(response => response.json())
+            .then(data => {
+              data.taluks.forEach(taluk => {
+                const option = document.createElement('option');
+                option.value = taluk;
+                option.textContent = taluk;
+                talukSelect.appendChild(option);
+              });
+            })
+            .catch(error => {
+              console.error('Error fetching taluks:', error);
+            });
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}
+
+

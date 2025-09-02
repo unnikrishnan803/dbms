@@ -1,0 +1,67 @@
+{% extends 'blood_app/base.html' %}
+{% block title %}Hospital Dashboard{% endblock %}
+{% block content %}
+<h2>Hospital Dashboard</h2>
+
+<div class="row">
+  <div class="col-lg-6">
+    <h4>Users</h4>
+    <div class="table-responsive">
+      <table class="table table-sm table-striped">
+        <thead>
+          <tr><th>Name</th><th>Blood</th><th>City</th><th>Phone</th><th>Certificate</th></tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.name }}</td>
+            <td>{{ u.blood_group }}</td>
+            <td>{{ u.city }}</td>
+            <td>{{ u.phone }}</td>
+            <td><a class="btn btn-sm btn-outline-secondary" href="{% url 'donor_certificate' u.id %}" target="_blank">Print</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="text-center">No users.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <h4>Blood Requests</h4>
+    <div class="table-responsive">
+      <table class="table table-sm table-striped">
+        <thead>
+          <tr><th>Requester</th><th>Blood</th><th>Hospital</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for r in requests %}
+          <tr>
+            <td>{{ r.requester.name }}</td>
+            <td>{{ r.blood_group }}</td>
+            <td>{{ r.hospital_name }}</td>
+            <td>{{ r.required_date }}</td>
+            <td>{{ r.status }}</td>
+            <td>
+              <form method="post" action="{% url 'update_request_status' r.id %}" class="d-flex gap-2">
+                {% csrf_token %}
+                <select name="status" class="form-select form-select-sm" style="width:auto">
+                  {% for s in request_statuses %}
+                  <option value="{{ s }}" {% if r.status == s %}selected{% endif %}>{{ s }}</option>
+                  {% endfor %}
+                </select>
+                <button class="btn btn-sm btn-outline-danger">Save</button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="text-center">No requests.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

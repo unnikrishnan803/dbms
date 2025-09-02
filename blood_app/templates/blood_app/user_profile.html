@@ -1,0 +1,130 @@
+{% extends 'blood_app/base.html' %}
+{% block title %}{{ user.name }}'s Profile - Blood Donation{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-4">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-person-circle me-2"></i>Profile</h4>
+      </div>
+      <div class="card-body text-center">
+        {% if user.photo %}
+          <img src="{{ user.photo.url }}" alt="{{ user.name }}" class="rounded-circle mb-3" style="width:150px;height:150px;object-fit:cover;">
+        {% else %}
+          <div class="bg-light border rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width:150px;height:150px;">
+            <i class="bi bi-person text-muted" style="font-size: 3rem;"></i>
+          </div>
+        {% endif %}
+        
+        <h4 class="mb-1">{{ user.name }}</h4>
+        <p class="text-muted mb-2">{{ user.age }} years old | {{ user.gender }}</p>
+        <span class="badge text-bg-danger mb-2">{{ user.blood_group }}</span>
+        
+        <div class="text-start mt-3">
+          <p><i class="bi bi-geo-alt me-2"></i>{{ user.city }}, {{ user.district }}</p>
+          <p><i class="bi bi-telephone me-2"></i>{{ user.phone }}</p>
+          {% if user.email %}
+            <p><i class="bi bi-envelope me-2"></i>{{ user.email }}</p>
+          {% endif %}
+          <p><i class="bi bi-droplet me-2"></i>Total Donations: {{ user.get_donation_count }}</p>
+          {% if user.get_last_donation_date %}
+            <p><i class="bi bi-calendar me-2"></i>Last Donation: {{ user.get_last_donation_date|date:"M d, Y" }}</p>
+          {% endif %}
+        </div>
+        
+        <div class="mt-3 d-flex flex-wrap gap-2 justify-content-center">
+          <a href="{% url 'donor_certificate' user.id %}" class="btn btn-danger btn-sm">
+            <i class="bi bi-award me-1"></i>Open Donor Certificate
+          </a>
+          <button onclick="window.print()" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-printer me-1"></i>Print Page
+          </button>
+          <a href="{% url 'add_emergency_contacts' user.id %}" class="btn btn-warning btn-sm">
+            <i class="bi bi-telephone-plus me-1"></i>Add Emergency Contacts
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-lg-8">
+    <!-- Donation History -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-heart-pulse me-2"></i>Donation History</h5>
+      </div>
+      <div class="card-body">
+        {% if donations %}
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Hospital</th>
+                  <th>Blood Group</th>
+                  <th>Units</th>
+                  <th>Certificate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for donation in donations %}
+                <tr>
+                  <td>{{ donation.donation_date|date:"M d, Y" }}</td>
+                  <td>{{ donation.hospital_name }}</td>
+                  <td><span class="badge text-bg-danger">{{ donation.blood_group }}</span></td>
+                  <td>{{ donation.units_donated }} unit(s)</td>
+                  <td>
+                    <a href="{% url 'donation_certificate' donation.id %}" class="btn btn-sm btn-outline-danger">
+                      <i class="bi bi-award me-1"></i>View
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="text-muted text-center py-3">
+            <i class="bi bi-emoji-frown me-2"></i>No donation history yet.
+          </p>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Emergency Contacts -->
+    <div class="card shadow-sm">
+      <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="bi bi-telephone-fill me-2"></i>Emergency Contacts</h5>
+      </div>
+      <div class="card-body">
+        {% if emergency_contacts %}
+          <div class="row">
+            {% for contact in emergency_contacts %}
+            <div class="col-md-6 mb-3">
+              <div class="card border-warning">
+                <div class="card-body">
+                  <h6 class="card-title">{{ contact.name }}</h6>
+                  <p class="card-text text-muted">{{ contact.relationship }}</p>
+                  <p class="mb-1"><i class="bi bi-telephone me-1"></i>{{ contact.phone }}</p>
+                  {% if contact.email %}
+                    <p class="mb-0"><i class="bi bi-envelope me-1"></i>{{ contact.email }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted text-center py-3">
+            <i class="bi bi-emoji-frown me-2"></i>No emergency contacts added yet.
+            <br>
+            <a href="{% url 'add_emergency_contacts' user.id %}" class="btn btn-warning btn-sm mt-2">
+              <i class="bi bi-plus-circle me-1"></i>Add Emergency Contacts
+            </a>
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

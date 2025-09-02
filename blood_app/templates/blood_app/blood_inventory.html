@@ -1,0 +1,114 @@
+{% extends 'blood_app/base.html' %}
+{% block title %}Blood Inventory - Blood Donation{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <h2 class="mb-4"><i class="bi bi-boxes me-2 text-danger"></i>Blood Inventory Management</h2>
+    
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-danger text-white">
+        <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Update Inventory</h5>
+      </div>
+      <div class="card-body">
+        <form method="post" class="row g-3">
+          {% csrf_token %}
+          <div class="col-md-4">
+            <label for="{{ form.blood_group.id_for_label }}" class="form-label">Blood Group</label>
+            {{ form.blood_group }}
+            {% if form.blood_group.errors %}
+              <div class="text-danger small">{{ form.blood_group.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ form.available_units.id_for_label }}" class="form-label">Available Units</label>
+            {{ form.available_units }}
+            {% if form.available_units.errors %}
+              <div class="text-danger small">{{ form.available_units.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-md-4">
+            <label for="{{ form.critical_level.id_for_label }}" class="form-label">Critical Level</label>
+            {{ form.critical_level }}
+            {% if form.critical_level.errors %}
+              <div class="text-danger small">{{ form.critical_level.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-danger">
+              <i class="bi bi-save me-2"></i>Update Inventory
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Inventory Status</h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-2">
+          {% for inventory in inventory_list %}
+          <div class="col-6">
+            <div class="card border-{{ inventory.get_status_color }}">
+              <div class="card-body text-center p-2">
+                <h6 class="mb-1">{{ inventory.blood_group }}</h6>
+                <span class="badge bg-{{ inventory.get_status_color }}">{{ inventory.available_units }} units</span>
+                {% if inventory.is_critical %}
+                  <small class="d-block text-danger">Critical!</small>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-12">
+            <p class="text-muted text-center">No inventory data available</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="table-responsive fade-in mt-4">
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        <th>Blood Group</th>
+        <th>Available Units</th>
+        <th>Critical Level</th>
+        <th>Status</th>
+        <th>Last Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for inventory in inventory_list %}
+      <tr>
+        <td><span class="badge text-bg-danger">{{ inventory.blood_group }}</span></td>
+        <td>{{ inventory.available_units }} units</td>
+        <td>{{ inventory.critical_level }} units</td>
+        <td>
+          {% if inventory.available_units == 0 %}
+            <span class="badge bg-danger">Out of Stock</span>
+          {% elif inventory.is_critical %}
+            <span class="badge bg-warning">Critical</span>
+          {% else %}
+            <span class="badge bg-success">Available</span>
+          {% endif %}
+        </td>
+        <td>{{ inventory.last_updated|date:"M d, Y H:i" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center text-muted py-4">
+          <i class="bi bi-emoji-frown me-2"></i>No inventory data available.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

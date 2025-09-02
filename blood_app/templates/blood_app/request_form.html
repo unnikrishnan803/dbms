@@ -1,0 +1,23 @@
+{% extends 'blood_app/base.html' %}
+{% block title %}Request Blood - Blood Donation{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-danger text-white">Request Blood</div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+          {% endif %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-danger">Submit Request</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

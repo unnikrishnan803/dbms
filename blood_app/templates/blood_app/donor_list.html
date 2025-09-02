@@ -1,0 +1,113 @@
+{% extends 'blood_app/base.html' %}
+{% block title %}Donors - Blood Donation{% endblock %}
+{% block content %}
+<h2 class="mb-1"><i class="bi bi-search-heart me-2 text-danger"></i>Find Donors</h2>
+{% if searched_at %}
+<div class="text-muted small mb-3">Searched at: {{ searched_at|date:'Y-m-d H:i' }}</div>
+{% endif %}
+<form method="get" class="row g-3 align-items-end mb-4 fade-in">
+  <div class="col-md-2">
+    <label for="{{ form.blood_group.id_for_label }}" class="form-label">Blood Group</label>
+    {{ form.blood_group }}
+  </div>
+  <div class="col-md-2">
+    <label for="{{ form.district.id_for_label }}" class="form-label">District</label>
+    {{ form.district }}
+  </div>
+  <div class="col-md-3">
+    <label for="{{ form.taluk.id_for_label }}" class="form-label">Taluk</label>
+    {{ form.taluk }}
+  </div>
+  <div class="col-md-3">
+    <label for="{{ form.min_age.id_for_label }}" class="form-label">Min Age</label>
+    {{ form.min_age }}
+  </div>
+  <div class="col-md-3">
+    <label for="{{ form.max_age.id_for_label }}" class="form-label">Max Age</label>
+    {{ form.max_age }}
+  </div>
+  <div class="col-12">
+    <button type="submit" class="btn btn-danger"><i class="bi bi-search me-2"></i>Search Donors</button>
+    <a href="{% url 'donor_list' %}" class="btn btn-outline-secondary ms-2"><i class="bi bi-arrow-clockwise me-2"></i>Reset</a>
+  </div>
+</form>
+
+<div class="table-responsive fade-in" style="animation-delay:.05s;">
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        <th>Photo</th>
+        <th>Name</th>
+        <th>Blood Group</th>
+        <th>District</th>
+        <th>Taluk</th>
+        <th>Phone</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for donor in donors %}
+      <tr>
+        <td>
+          {% if donor.photo %}
+            <img src="{{ donor.photo.url }}" alt="{{ donor.name }}" class="rounded" style="width:48px;height:48px;object-fit:cover;">
+          {% else %}
+            <div class="bg-light border rounded" style="width:48px;height:48px;"></div>
+          {% endif %}
+        </td>
+        <td>{{ donor.name }}</td>
+        <td><span class="badge text-bg-danger">{{ donor.blood_group }}</span></td>
+        <td>{{ donor.district }}</td>
+        <td>{{ donor.taluk|default:"-" }}</td>
+        <td>{{ donor.phone }}</td>
+        <td>
+          <div class="btn-group" role="group">
+            <a href="{% url 'request_blood' donor.id %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-send me-1"></i>Request</a>
+            <a href="{% url 'record_donation' %}?donor={{ donor.id }}" class="btn btn-sm btn-outline-success"><i class="bi bi-droplet me-1"></i>Record Donation</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" class="text-center text-muted py-4"><i class="bi bi-emoji-frown me-2"></i>No donors found. Try another filter.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const districtSelect = document.getElementById('search-district-select');
+    const talukSelect = document.getElementById('search-taluk-select');
+    
+    if (districtSelect) {
+        districtSelect.addEventListener('change', function() {
+            const selectedDistrict = this.value;
+            
+            // Clear taluk options
+            talukSelect.innerHTML = '<option value="">Any Taluk</option>';
+            
+            if (selectedDistrict) {
+                // Fetch taluks for selected district
+                fetch(`/get-taluks/?district=${encodeURIComponent(selectedDistrict)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.taluks.forEach(taluk => {
+                            const option = document.createElement('option');
+                            option.value = taluk;
+                            option.textContent = taluk;
+                            talukSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching taluks:', error);
+                    });
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+

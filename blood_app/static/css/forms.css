@@ -1,0 +1,168 @@
+/* Enhanced Form Styling for Blood Donation System */
+
+/* Theme-aware form variables */
+:root {
+  --form-bg: #ffffff;
+  --form-border: #e9ecef;
+  --form-text: #495057;
+  --form-focus-border: #dc3545;
+  --form-focus-shadow: rgba(220, 53, 69, 0.25);
+}
+
+.theme-light {
+  --form-bg: #ffffff;
+  --form-border: #e9ecef;
+  --form-text: #495057;
+  --form-focus-border: #dc3545;
+  --form-focus-shadow: rgba(220, 53, 69, 0.25);
+}
+
+.theme-dark {
+  --form-bg: #0b1226;
+  --form-border: rgba(255,255,255,0.08);
+  --form-text: #e5e7eb;
+  --form-focus-border: #e11d48;
+  --form-focus-shadow: rgba(225, 29, 72, 0.35);
+}
+
+/* Form Container Styling */
+.form-container {
+    background: linear-gradient(135deg, var(--form-bg) 0%, var(--form-bg) 100%);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    margin: 2rem 0;
+    border: 1px solid var(--form-border);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid #dc3545;
+}
+
+.form-header h2 {
+    color: #dc3545;
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Enhanced Form Controls */
+.form-control-lg, .form-select-lg {
+    padding: 1rem 1.25rem;
+    font-size: 1.1rem;
+    border: 2px solid var(--form-border);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: var(--form-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    color: var(--form-text);
+}
+
+.form-control-lg:focus, .form-select-lg:focus {
+    border-color: var(--form-focus-border);
+    box-shadow: 0 0 0 0.2rem var(--form-focus-shadow);
+    transform: translateY(-2px);
+    background: var(--form-bg);
+    color: var(--form-text);
+}
+
+.form-control-lg:hover, .form-select-lg:hover {
+    border-color: var(--form-focus-border);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Phone Input Special Styling */
+.phone-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 6 6m0 0V4m0 3H4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 3rem;
+}
+
+.phone-input:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23dc3545' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 1 6 6m0 0V4m0 3H4'/%3e%3c/svg%3e");
+}
+
+/* Form Labels */
+.form-label {
+    font-weight: 600;
+    color: var(--form-text);
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    display: block;
+}
+
+/* Enhanced Button Styling */
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-lg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-lg:hover::before {
+    left: 100%;
+}
+
+.btn-danger { color: #fff; }
+
+/* Form Animations */
+.form-fade-in {
+    animation: formFadeIn 0.6s ease-out;
+}
+
+@keyframes formFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    
+    .form-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .btn-lg {
+        padding: 0.875rem 1.5rem;
+        font-size: 1.1rem;
+    }
+}

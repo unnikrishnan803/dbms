@@ -1,0 +1,150 @@
+{% extends 'blood_app/base.html' %}
+{% block title %}Statistics - Blood Donation{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-graph-up me-2 text-danger"></i>Blood Donation Statistics</h2>
+
+<div class="row g-4">
+  <!-- Blood Group Distribution -->
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Blood Group Distribution</h5>
+      </div>
+      <div class="card-body">
+        {% if blood_group_stats %}
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Blood Group</th>
+                  <th>Donors</th>
+                  <th>Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for stat in blood_group_stats %}
+                <tr>
+                  <td><span class="badge text-bg-danger">{{ stat.blood_group }}</span></td>
+                  <td>{{ stat.count }}</td>
+                  <td>
+                    <div class="progress" style="height: 20px;">
+                      <div class="progress-bar bg-danger" style="width: {{ stat.count|floatformat:1 }}%">
+                        {{ stat.count|floatformat:1 }}%
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="text-muted text-center py-3">No data available</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Donation Statistics -->
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-heart-pulse me-2"></i>Donation Statistics</h5>
+      </div>
+      <div class="card-body">
+        {% if donation_stats %}
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Blood Group</th>
+                  <th>Total Donations</th>
+                  <th>Total Units</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for stat in donation_stats %}
+                <tr>
+                  <td><span class="badge text-bg-danger">{{ stat.blood_group }}</span></td>
+                  <td>{{ stat.total_donations }}</td>
+                  <td>{{ stat.total_units }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p class="text-muted text-center py-3">No donation data available</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Monthly Trends -->
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="bi bi-calendar-event me-2"></i>Monthly Donation Trends</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          {% for month_data in monthly_donations %}
+          <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="card border-info {% if month_data.count == 0 %}bg-light{% endif %}">
+              <div class="card-body text-center">
+                <h6 class="card-title">{{ month_data.month_name }}</h6>
+                <span class="badge {% if month_data.count == 0 %}bg-secondary{% else %}bg-info{% endif %}">
+                  {{ month_data.count }}
+                </span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="col-12">
+    <div class="row g-3">
+      <div class="col-md-3">
+        <div class="card bg-primary text-white">
+          <div class="card-body text-center">
+            <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
+            <h4 class="mt-2">{{ total_donors|default:"0" }}</h4>
+            <p class="mb-0">Total Donors</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-success text-white">
+          <div class="card-body text-center">
+            <i class="bi bi-heart-pulse-fill" style="font-size: 2rem;"></i>
+            <h4 class="mt-2">{{ total_donations|default:"0" }}</h4>
+            <p class="mb-0">Total Donations</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-warning text-dark">
+          <div class="card-body text-center">
+            <i class="bi bi-file-earmark-text-fill" style="font-size: 2rem;"></i>
+            <h4 class="mt-2">{{ total_requests|default:"0" }}</h4>
+            <p class="mb-0">Blood Requests</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-danger text-white">
+          <div class="card-body text-center">
+            <i class="bi bi-exclamation-triangle-fill" style="font-size: 2rem;"></i>
+            <h4 class="mt-2">{{ critical_blood_groups|length|default:"0" }}</h4>
+            <p class="mb-0">Critical Levels</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
